@@ -3,11 +3,15 @@ package com.mad.mysqlroomdb
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.mad.mysqlroomdb.data.Product
+import com.mad.mysqlroomdb.data.ProductAdapter
 import com.mad.mysqlroomdb.data.ProductDB
 import com.mad.mysqlroomdb.data.ProductDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -18,16 +22,56 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val btn: Button = findViewById(R.id.btnInsert)
-        dao =  ProductDB.getInstance(application).productDao
+        //val btn: Button = findViewById(R.id.btnInsert)
+        //dao =  ProductDB.getInstance(application).productDao
 
-        btn.setOnClickListener(){
-            val p = Product(0, "Apple",1.50)
-            CoroutineScope(IO).launch{
+       //btn.setOnClickListener(){
+           // val p = Product(0, "Apple",1.50)
+           //CoroutineScope(IO).launch{
+               // dao.insertProduct(p)
+           // }
+        //}
+
+        dao = ProductDB.getInstance(application).productDao
+
+        val btnInsert :Button = findViewById(R.id.btnInsert)
+        btnInsert.setOnClickListener(){
+
+            val name :String  = findViewById<TextView>(R.id.tfName).text.toString()
+            val price:Double =  findViewById<TextView>(R.id.tfPrice).text.toString().toDouble()
+
+            val p = Product(0, name, price)
+
+            CoroutineScope(IO).launch {
                 dao.insertProduct(p)
             }
 
-
         }
+
+        val btnGet :Button = findViewById(R.id.btnGet)
+        btnGet.setOnClickListener(){
+
+            CoroutineScope(IO).launch {
+                var productName : String = ""
+                val productList : List<Product> =  dao.getAll()
+
+                //val productList : List<Product> =  dao.getPriceLessThan(1000.00)
+
+                //for(p :Product in productList){
+                   // productName += p.name + "\n"
+                //}
+                CoroutineScope(Main).launch {
+                    //val tvResult: TextView = findViewById(R.id.tvResult)
+                    //tvResult.text = productName
+
+                    val myAdapter = ProductAdapter(productList)
+                    val myRecycleView : RecyclerView = findViewById(R.id.rvProduct)
+                    myRecycleView.adapter = myAdapter
+                    myRecycleView.setHasFixedSize(true)
+                }
+            }
+        }
+
+
     }
 }

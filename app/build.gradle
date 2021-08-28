@@ -48,6 +48,9 @@ dependencies {
     // Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
 
+    //Card view and recycle view
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation "androidx.cardview:cardview:1.0.0"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.6.0'
